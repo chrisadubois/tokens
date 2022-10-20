@@ -39,6 +39,36 @@ class SolidToken extends Token {
     return this;
   }
 
+    /**
+   * Merge SolidToken Grades into an existing SolidToken's Grades.
+   *
+   * @private
+   * @param {DTO} dto
+   * @param {SolidToken.Grades} dto.source SolidToken Grades to merge into the destination SolidToken Grades.
+   * @param {SolidToken.Grades} dto.destination SolidToken Grades to be receiving a merge.
+   * @returns {SolidToken.Grades} Merged SolidToken Grades.
+   */
+     static mergeColors({ destination, source }) {
+      return Object.entries(source).reduce(
+        (final, [color, value]) => ({
+          ...final,
+        }),
+        { ...destination }
+      );
+    }
+
+      /**
+   * Merge SolidToken Grades into an existing SolidToken's Grades.
+   *
+   * @param {DTO} dto
+   * @param {SolidToken.Grades} dto.source SolidToken Grades to merge into the destination SolidToken Grades.
+   * @param {SolidToken.Grades} dto.destination SolidToken Grades to be receiving a merge.
+   * @returns {SolidToken.Grades} Merged SolidToken Grades.
+   */
+  static mergeGrades({ destination, source }) {
+    return Object.entries(source).reduce((final, [grade, value]) => ({ ...final, [grade]: value }), { ...destination });
+  }
+
 
   /**
    * Normalize SolidToken Colors.
@@ -58,10 +88,10 @@ class SolidToken extends Token {
 
       case SolidToken.CONSTANTS.TOKEN_FORMATS.AUTOMATED:
         normalized = Object.entries(colors).reduce(
-          (mutated, [key, value]) => ({
-            ...mutated,
-            [key]: SolidToken.normalizeGrades({ format, grades: value }),
-          }),
+          (mutated, [key, value]) => {
+            const normalized = SolidToken.normalizeGrades({ format, grades: value });
+            return {solid: {...mutated.solid, ...normalized.solid}};
+          },
           {}
         );
         break;
@@ -90,7 +120,30 @@ class SolidToken extends Token {
           break;
   
         case SolidToken.CONSTANTS.TOKEN_FORMATS.AUTOMATED:
-          normalized = Object.entries(grades);
+          normalized = Object.entries(grades).reduce(
+            (
+              mutated,
+              [
+                key,
+                {
+                  rgba: { r, g, b, a },
+                },
+              ]
+            ) => {
+              const tokenized = key.split("-");
+              const value = tokenized.pop();
+              const scheme = tokenized.pop();
+              const theme = tokenized.pop();
+              const level = tokenized.pop();
+              mutated[level] = mutated[level] || {};
+              mutated[level][theme] = mutated[level][theme] || {};
+              mutated[level][theme][scheme] = mutated[level][theme][scheme] || {};
+              mutated[level][theme][scheme][value] = mutated[level][theme][scheme][value] || {};
+              mutated[level][theme][scheme][value] = `rgba(${r}, ${g}, ${b}, ${a})`;
+              return {...mutated};
+          },
+            {}
+          );
           break;
   
         default:
