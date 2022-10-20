@@ -41,13 +41,13 @@ class SolidToken extends Token {
   }
 
   /**
-   * Merge SolidToken Grades into an existing SolidToken's Grades.
+   * Merge SolidToken Tokens into an existing SolidToken's Tokens.
    *
    * @private
    * @param {DTO} dto
-   * @param {SolidToken.Grades} dto.source SolidToken Grades to merge into the destination SolidToken Grades.
-   * @param {SolidToken.Grades} dto.destination SolidToken Grades to be receiving a merge.
-   * @returns {SolidToken.Grades} Merged SolidToken Grades.
+   * @param {SolidToken.Tokens} dto.source SolidToken Tokens to merge into the destination SolidToken Tokens.
+   * @param {SolidToken.Tokens} dto.destination SolidToken Tokens to be receiving a merge.
+   * @returns {SolidToken.Tokens} Merged SolidToken Tokens.
    */
   static mergeTokens({ destination, source }) {
     return merge(destination, source); // TODO: lodash sucks but it's quick and easy
@@ -71,7 +71,7 @@ class SolidToken extends Token {
 
       case SolidToken.CONSTANTS.TOKEN_FORMATS.AUTOMATED:
         normalized = Object.entries(colors).reduce((mutated, [key, value]) => {
-          const normalized = SolidToken.normalizeGrades({ format, grades: value });
+          const normalized = SolidToken.normalizeTokens({ format, tokens: value });
           return { solid: { ...mutated.solid, ...normalized.solid } };
         }, {});
         break;
@@ -84,23 +84,23 @@ class SolidToken extends Token {
   }
 
   /**
-   * Normalize SolidToken Grades.
+   * Normalize SolidToken Tokens.
    *
    * @param {DTO} dto
-   * @param {SolidToken.Grades} dto.colors Grades to be normalized.
-   * @param {SolidToken.Format} dto.format Format of the provided Grades.
-   * @returns {SolidToken.Grades} The provided SolidToken Grades, normalized.
+   * @param {SolidToken.Tokens} dto.colors Tokens to be normalized.
+   * @param {SolidToken.Format} dto.format Format of the provided Tokens.
+   * @returns {SolidToken.Tokens} The provided SolidToken Tokens, normalized.
    */
-  static normalizeGrades({ format, grades }) {
+  static normalizeTokens({ format, tokens }) {
     let normalized;
 
     switch (format) {
       case SolidToken.CONSTANTS.TOKEN_FORMATS.STANDARD:
-        normalized = grades;
+        normalized = tokens;
         break;
 
       case SolidToken.CONSTANTS.TOKEN_FORMATS.AUTOMATED:
-        normalized = Object.entries(grades).reduce(
+        normalized = Object.entries(tokens).reduce(
           (
             mutated,
             [
@@ -122,7 +122,7 @@ class SolidToken extends Token {
         break;
 
       default:
-        throw new Error(`models.SolidToken.normalizeGrades() :: "${format}" is not a supported format`);
+        throw new Error(`models.SolidToken.normalizeTokens() :: "${format}" is not a supported format`);
     }
 
     return normalized;
