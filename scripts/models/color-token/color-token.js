@@ -28,7 +28,7 @@ class ColorToken extends Token {
   }
 
   /**
-   * Normalize the Data of this ColorToken.
+   * Normalize the Data of this ColorToken into the `standard` format.
    *
    * @protected
    * @returns {This} This ColorToken.
@@ -48,7 +48,7 @@ class ColorToken extends Token {
    * @param {ColorToken.Grades} dto.destination ColorToken Grades to be receiving a merge.
    * @returns {ColorToken.Grades} Merged ColorToken Grades.
    */
-  static mergeColors({ destination, source }) {
+  static mergeColors({ destination = {}, source }) {
     return Object.entries(source).reduce(
       (final, [color, value]) => ({
         ...final,
@@ -66,7 +66,7 @@ class ColorToken extends Token {
    * @param {ColorToken.Grades} dto.destination ColorToken Grades to be receiving a merge.
    * @returns {ColorToken.Grades} Merged ColorToken Grades.
    */
-  static mergeGrades({ destination, source }) {
+  static mergeGrades({ destination = {}, source }) {
     return Object.entries(source).reduce((final, [grade, value]) => ({ ...final, [grade]: value }), { ...destination });
   }
 

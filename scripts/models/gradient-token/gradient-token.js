@@ -14,7 +14,9 @@ class GradientToken extends Token {
   }
 
   /**
-   * Merge a GradientToken Object's data into this GradientToken Object's data.
+   * Merge a GradientToken Object's data into this GradientToken Object's data. The first key in the data object for
+   * GradationToken.Data Objects is a redundant `gradation`, with the rest of the object nested below. This just happens
+   * to be the normalized shape from our existing local tokens.
    *
    * @param {DTO} dto
    * @param {GradientToken.Data} dto.data Data to be merged into this Token Object's data.
@@ -27,7 +29,7 @@ class GradientToken extends Token {
   }
 
   /**
-   * Normalize the Data of this GradientToken.
+   * Normalize the Data of this GradientToken into the `standard` format.
    *
    * @returns {This} This GradientToken.
    */

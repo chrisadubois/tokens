@@ -90,7 +90,7 @@ class Token {
   }
 
   /**
-   * Normalize this Token.
+   * Normalize this Token into the `standard` format.
    *
    * @returns {This} This Token with its data and format value normalized.
    */
