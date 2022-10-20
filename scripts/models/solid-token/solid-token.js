@@ -1,3 +1,4 @@
+const merge = require("lodash.merge");
 const Token = require("../token");
 
 /**
@@ -21,7 +22,7 @@ class SolidToken extends Token {
    * @param {SolidToken.Data} dto.data Data to be merged into this Token Object's data.
    * @returns {This} This SolidToken.
    */
-   mergeData({ data }) {
+  mergeData({ data }) {
     this.data = SolidToken.mergeColors({ destination: this.data, source: data });
 
     return this;
@@ -39,7 +40,7 @@ class SolidToken extends Token {
     return this;
   }
 
-    /**
+  /**
    * Merge SolidToken Grades into an existing SolidToken's Grades.
    *
    * @private
@@ -48,27 +49,9 @@ class SolidToken extends Token {
    * @param {SolidToken.Grades} dto.destination SolidToken Grades to be receiving a merge.
    * @returns {SolidToken.Grades} Merged SolidToken Grades.
    */
-     static mergeColors({ destination, source }) {
-      return Object.entries(source).reduce(
-        (final, [color, value]) => ({
-          ...final,
-        }),
-        { ...destination }
-      );
-    }
-
-      /**
-   * Merge SolidToken Grades into an existing SolidToken's Grades.
-   *
-   * @param {DTO} dto
-   * @param {SolidToken.Grades} dto.source SolidToken Grades to merge into the destination SolidToken Grades.
-   * @param {SolidToken.Grades} dto.destination SolidToken Grades to be receiving a merge.
-   * @returns {SolidToken.Grades} Merged SolidToken Grades.
-   */
-  static mergeGrades({ destination, source }) {
-    return Object.entries(source).reduce((final, [grade, value]) => ({ ...final, [grade]: value }), { ...destination });
+  static mergeColors({ destination, source }) {
+    return merge(destination, source);
   }
-
 
   /**
    * Normalize SolidToken Colors.
@@ -78,7 +61,7 @@ class SolidToken extends Token {
    * @param {SolidToken.Format} dto.format Format of the provided Colors.
    * @returns {SolidToken.Colors} The provided SolidToken Colors, normalized.
    */
-   static normalizeColors({ colors, format }) {
+  static normalizeColors({ colors, format }) {
     let normalized;
 
     switch (format) {
@@ -87,13 +70,10 @@ class SolidToken extends Token {
         break;
 
       case SolidToken.CONSTANTS.TOKEN_FORMATS.AUTOMATED:
-        normalized = Object.entries(colors).reduce(
-          (mutated, [key, value]) => {
-            const normalized = SolidToken.normalizeGrades({ format, grades: value });
-            return {solid: {...mutated.solid, ...normalized.solid}};
-          },
-          {}
-        );
+        normalized = Object.entries(colors).reduce((mutated, [key, value]) => {
+          const normalized = SolidToken.normalizeGrades({ format, grades: value });
+          return { solid: { ...mutated.solid, ...normalized.solid } };
+        }, {});
         break;
 
       default:
@@ -103,7 +83,7 @@ class SolidToken extends Token {
     return normalized;
   }
 
-    /**
+  /**
    * Normalize SolidToken Grades.
    *
    * @param {DTO} dto
@@ -111,47 +91,47 @@ class SolidToken extends Token {
    * @param {SolidToken.Format} dto.format Format of the provided Grades.
    * @returns {SolidToken.Grades} The provided SolidToken Grades, normalized.
    */
-     static normalizeGrades({ format, grades }) {
-      let normalized;
-  
-      switch (format) {
-        case SolidToken.CONSTANTS.TOKEN_FORMATS.STANDARD:
-          normalized = grades;
-          break;
-  
-        case SolidToken.CONSTANTS.TOKEN_FORMATS.AUTOMATED:
-          normalized = Object.entries(grades).reduce(
-            (
-              mutated,
-              [
-                key,
-                {
-                  rgba: { r, g, b, a },
-                },
-              ]
-            ) => {
-              const tokenized = key.split("-");
-              const value = tokenized.pop();
-              const scheme = tokenized.pop();
-              const theme = tokenized.pop();
-              const level = tokenized.pop();
-              mutated[level] = mutated[level] || {};
-              mutated[level][theme] = mutated[level][theme] || {};
-              mutated[level][theme][scheme] = mutated[level][theme][scheme] || {};
-              mutated[level][theme][scheme][value] = mutated[level][theme][scheme][value] || {};
-              mutated[level][theme][scheme][value] = `rgba(${r}, ${g}, ${b}, ${a})`;
-              return {...mutated};
+  static normalizeGrades({ format, grades }) {
+    let normalized;
+
+    switch (format) {
+      case SolidToken.CONSTANTS.TOKEN_FORMATS.STANDARD:
+        normalized = grades;
+        break;
+
+      case SolidToken.CONSTANTS.TOKEN_FORMATS.AUTOMATED:
+        normalized = Object.entries(grades).reduce(
+          (
+            mutated,
+            [
+              key,
+              {
+                rgba: { r, g, b, a },
+              },
+            ]
+          ) => {
+            const tokenized = key.split("-");
+            const value = tokenized.pop();
+            const scheme = tokenized.pop();
+            const theme = tokenized.pop();
+            const level = tokenized.pop();
+            mutated[level] = mutated[level] || {};
+            mutated[level][theme] = mutated[level][theme] || {};
+            mutated[level][theme][scheme] = mutated[level][theme][scheme] || {};
+            mutated[level][theme][scheme][value] = mutated[level][theme][scheme][value] || {};
+            mutated[level][theme][scheme][value] = `rgba(${r}, ${g}, ${b}, ${a})`;
+            return { ...mutated };
           },
-            {}
-          );
-          break;
-  
-        default:
-          throw new Error(`models.SolidToken.normalizeGrades() :: "${format}" is not a supported format`);
-      }
-  
-      return normalized;
+          {}
+        );
+        break;
+
+      default:
+        throw new Error(`models.SolidToken.normalizeGrades() :: "${format}" is not a supported format`);
     }
+
+    return normalized;
+  }
 
   /**
    * Constants associated with the SolidToken Object.
