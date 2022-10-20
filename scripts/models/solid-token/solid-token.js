@@ -23,7 +23,7 @@ class SolidToken extends Token {
    * @returns {This} This SolidToken.
    */
   mergeData({ data }) {
-    this.data = SolidToken.mergeColors({ destination: this.data, source: data });
+    this.data = SolidToken.mergeTokens({ destination: this.data, source: data });
 
     return this;
   }
@@ -49,8 +49,10 @@ class SolidToken extends Token {
    * @param {SolidToken.Grades} dto.destination SolidToken Grades to be receiving a merge.
    * @returns {SolidToken.Grades} Merged SolidToken Grades.
    */
-  static mergeColors({ destination, source }) {
-    return merge(destination, source);
+  static mergeTokens({ destination, source }) {
+    this.data = merge(destination, source); // TODO: lodash sucks but it's quick and easy
+
+    return this;
   }
 
   /**
@@ -110,15 +112,10 @@ class SolidToken extends Token {
               },
             ]
           ) => {
-            const tokenized = key.split("-");
-            const value = tokenized.pop();
-            const scheme = tokenized.pop();
-            const theme = tokenized.pop();
-            const level = tokenized.pop();
+            const [level, theme, scheme, value] = key.split("-");
             mutated[level] = mutated[level] || {};
             mutated[level][theme] = mutated[level][theme] || {};
             mutated[level][theme][scheme] = mutated[level][theme][scheme] || {};
-            mutated[level][theme][scheme][value] = mutated[level][theme][scheme][value] || {};
             mutated[level][theme][scheme][value] = `rgba(${r}, ${g}, ${b}, ${a})`;
             return { ...mutated };
           },
