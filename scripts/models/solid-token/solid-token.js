@@ -50,9 +50,7 @@ class SolidToken extends Token {
    * @returns {SolidToken.Grades} Merged SolidToken Grades.
    */
   static mergeTokens({ destination, source }) {
-    this.data = merge(destination, source); // TODO: lodash sucks but it's quick and easy
-
-    return this;
+    return merge(destination, source); // TODO: lodash sucks but it's quick and easy
   }
 
   /**
