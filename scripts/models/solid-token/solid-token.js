@@ -5,7 +5,7 @@ const Token = require("../token");
  */
 class SolidToken extends Token {
   /**
-   * Construct a new ColorToken.
+   * Construct a new SolidToken.
    *
    * @param {Token.Config} config SolidToken configuration Object.
    */
@@ -18,7 +18,7 @@ class SolidToken extends Token {
    *
    * @protected
    * @param {DTO} dto
-   * @param {ColorToken.Data} dto.data Data to be merged into this Token Object's data.
+   * @param {SolidToken.Data} dto.data Data to be merged into this Token Object's data.
    * @returns {This} This SolidToken.
    */
    mergeData({ data }) {
@@ -44,57 +44,57 @@ class SolidToken extends Token {
    * Normalize SolidToken Colors.
    *
    * @param {DTO} dto
-   * @param {ColorToken.Colors} dto.colors Colors to be normalized.
-   * @param {ColorToken.Format} dto.format Format of the provided Colors.
-   * @returns {ColorToken.Colors} The provided ColorToken Colors, normalized.
+   * @param {SolidToken.Colors} dto.colors Colors to be normalized.
+   * @param {SolidToken.Format} dto.format Format of the provided Colors.
+   * @returns {SolidToken.Colors} The provided SolidToken Colors, normalized.
    */
    static normalizeColors({ colors, format }) {
     let normalized;
 
     switch (format) {
-      case ColorToken.CONSTANTS.TOKEN_FORMATS.STANDARD:
+      case SolidToken.CONSTANTS.TOKEN_FORMATS.STANDARD:
         normalized = colors;
         break;
 
-      case ColorToken.CONSTANTS.TOKEN_FORMATS.AUTOMATED:
+      case SolidToken.CONSTANTS.TOKEN_FORMATS.AUTOMATED:
         normalized = Object.entries(colors).reduce(
           (mutated, [key, value]) => ({
             ...mutated,
-            [key]: ColorToken.normalizeGrades({ format, grades: value }),
+            [key]: SolidToken.normalizeGrades({ format, grades: value }),
           }),
           {}
         );
         break;
 
       default:
-        throw new Error(`models.ColorToken.normalizeColors() :: "${format}" is not a supported format`);
+        throw new Error(`models.SolidToken.normalizeColors() :: "${format}" is not a supported format`);
     }
 
     return normalized;
   }
 
     /**
-   * Normalize ColorToken Grades.
+   * Normalize SolidToken Grades.
    *
    * @param {DTO} dto
-   * @param {ColorToken.Grades} dto.colors Grades to be normalized.
-   * @param {ColorToken.Format} dto.format Format of the provided Grades.
-   * @returns {ColorToken.Grades} The provided ColorToken Grades, normalized.
+   * @param {SolidToken.Grades} dto.colors Grades to be normalized.
+   * @param {SolidToken.Format} dto.format Format of the provided Grades.
+   * @returns {SolidToken.Grades} The provided SolidToken Grades, normalized.
    */
      static normalizeGrades({ format, grades }) {
       let normalized;
   
       switch (format) {
-        case ColorToken.CONSTANTS.TOKEN_FORMATS.STANDARD:
+        case SolidToken.CONSTANTS.TOKEN_FORMATS.STANDARD:
           normalized = grades;
           break;
   
-        case ColorToken.CONSTANTS.TOKEN_FORMATS.AUTOMATED:
+        case SolidToken.CONSTANTS.TOKEN_FORMATS.AUTOMATED:
           normalized = Object.entries(grades);
           break;
   
         default:
-          throw new Error(`models.ColorToken.normalizeGrades() :: "${format}" is not a supported format`);
+          throw new Error(`models.SolidToken.normalizeGrades() :: "${format}" is not a supported format`);
       }
   
       return normalized;
