@@ -21,6 +21,7 @@ class GradientToken extends Token {
    * @returns {This} This GradientToken.
    */
   mergeData({ data }) {
+    debugger;
     this.data = { gradation: GradientToken.mergeGradations({ destination: this.data.gradation, source: data.gradation }) };
 
     return this;
@@ -32,6 +33,7 @@ class GradientToken extends Token {
    * @returns {This} This GradientToken.
    */
   normalizeData() {
+    debugger;
     this.data = { gradation: GradientToken.normalizeGradations({ format: this.format, gradations: this.data.gradation }) };
 
     return this;
